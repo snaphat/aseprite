@@ -21,7 +21,7 @@ jobs:
     - name: Set Version
       shell: bash
       run: |
-        sed -i s/1.x-dev/$GITHUB_REF_NAME/g ./src/ver/CMakeLists.txt
+        sed -i s/1.x-dev/${GITHUB_REF_NAME:1}/g ./src/ver/CMakeLists.txt
     - name: Generating Makefiles
       shell: bash
       run: |
