@@ -9,15 +9,31 @@ jobs:
         submodules: 'recursive'
     - uses: seanmiddleditch/gha-setup-ninja@master
     - uses: ilammy/msvc-dev-cmd@v1
+    - uses: robinraju/release-downloader@v1.3
+      with:
+        repository: "aseprite/skia"
+        latest: true
+        filename: "Skia-Windows-Release-x64.zip"
+    - name: Unzip Skia
+      shell: bash
+      run: |
+        7z x Skia-Windows-Release-x64.zip
+    - name: Set Version
+      shell: bash
+      run: |
+        sed -i s/1.x-dev/${GITHUB_REF_NAME:1}/g ./src/ver/CMakeLists.txt
     - name: Generating Makefiles
       shell: bash
       run: |
-        export enable_ccache=off
+        dir
+        dir ./out
+        dir ./out/Release-x64
         cmake -S . -B build -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
-          -DCMAKE_OSX_DEPLOYMENT_TARGET=10.9 \
-          -DENABLE_TESTS=Off \
+          -DENABLE_TESTS=off \
           -DENABLE_UI=on \
+          -DLAF_BACKEND=skia \
+          -DSKIA_DIR=. \
           -DENABLE_CCACHE=off
     - name: Compiling
       shell: bash
